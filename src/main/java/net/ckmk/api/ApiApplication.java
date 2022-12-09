@@ -11,7 +11,7 @@ public class ApiApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ApiApplication.class, args);
-		Thread cmds = new Thread(new Runnable() {
+		Thread commands = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				CommandHandler h = new CommandHandler();
@@ -25,7 +25,7 @@ public class ApiApplication {
 				}
 			}
 		});
-		cmds.start();
+		commands.start();
 	}
 
 }
