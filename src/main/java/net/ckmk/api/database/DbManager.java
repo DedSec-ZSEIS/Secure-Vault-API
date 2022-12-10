@@ -21,10 +21,9 @@ public class DbManager {
             connect();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT status FROM users where email=\"" + email + "\";");
-            //todo change the uat
             if (rs.next()){
                 if (rs.getString("status").equals("pending")){
-                    stmt.execute("UPDATE users set pass=\"" + pass + "\", fullName=\"" + fullName + "\", status=\"accepted\", dbSpaceTaken=0 where email=\"" + email + "\";");
+                    stmt.execute("UPDATE users set pass=\"" + pass + "\", fullName=\"" + fullName + "\", status=\"accepted\", uat=\"" + UUID.randomUUID() + "\", dbSpaceTaken=0 where email=\"" + email + "\";");
                     rs.close();
                     stmt.close();
                     close();
