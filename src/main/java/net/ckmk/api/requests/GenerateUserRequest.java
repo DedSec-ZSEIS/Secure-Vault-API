@@ -6,7 +6,6 @@ import net.ckmk.api.responses.GenerateUserResponse;
 public class GenerateUserRequest extends RequestValidator{
     private String createdEmail;
     private boolean createdIsAdmin;
-    private final DbManager db = new DbManager();
 
     public String getCreatedEmail() {
         return createdEmail;
@@ -22,11 +21,5 @@ public class GenerateUserRequest extends RequestValidator{
 
     public void setCreatedIsAdmin(boolean createdIsAdmin) {
         this.createdIsAdmin = createdIsAdmin;
-    }
-    public GenerateUserResponse generate(){
-        if (db.isDbEnabled() && validateAdminRequest()){
-            return db.generateUser(createdEmail, createdIsAdmin);
-        }
-        return new GenerateUserResponse(null, false, false);
     }
 }

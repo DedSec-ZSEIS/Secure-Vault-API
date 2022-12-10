@@ -7,6 +7,7 @@ import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
 import net.ckmk.api.responses.Response;
 import net.ckmk.api.responses.ValidateGenerationLinkResponse;
+import net.ckmk.api.service.impl.UserServiceImpl;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,14 +15,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MainRestController {
+
+    UserServiceImpl users = new UserServiceImpl();
+
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest req) {
-        return req.logIn();
+        return users.logIn(req);
     }
 
     @PostMapping("/generateUser")
     public GenerateUserResponse generateUser(@RequestBody GenerateUserRequest req){
-        return req.generate();
+        return users.generateUser(req);
     }
 
     @PostMapping("/validateLink/{uat}")
@@ -31,6 +35,6 @@ public class MainRestController {
 
     @PostMapping("/validateUser")
     public Response validateUser(@RequestBody ValidateUserRequest req){
-        return req.validate();
+        return users.validateNewUser(req);
     }
 }
