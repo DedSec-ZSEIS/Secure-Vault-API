@@ -12,6 +12,8 @@ public interface UserService {
     GenerateUserResponse generateUser(GenerateUserRequest req);
     Response validateNewUser(ValidateUserRequest req);
     LoginResponse logIn(LoginRequest req);
-    public boolean validateCreationRequest(String email, String uat);
-    public boolean validateAdminRequest(String email, String uat);
+    boolean validateCreationRequest(String email, String uat);
+    boolean validateAdminRequest(String email, String uat);
+    User getUserByEmail(String email, String uat);
+    User findUser(String finding, String finderEmail, String findersUat);
 }

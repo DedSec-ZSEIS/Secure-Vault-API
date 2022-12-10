@@ -16,6 +16,25 @@ public class DbManager {
         this.conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/securevault","root","");
     }
 
+    public User getUser(String email){
+        User user = null;
+        try {
+            connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users where email=\"" + email + "\";");
+            if (rs.next()){
+                user = new User(rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                        rs.getString("fullName"), rs.getInt("dbSpaceTaken"));
+            }
+            rs.close();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+
     public boolean validateUser(String email, String pass, String fullName){
         try {
             connect();
@@ -189,7 +208,7 @@ public class DbManager {
                 rs.close();
                 stmt.close();
                 close();
-                User user = getUser(email, uat);
+                User user = getUser(email);
                 return new LoginResponse(user.getEmail(), true, user.getUat(), user.isAdmin(), user.isAllowed(), true);
             }
             return new LoginResponse(null, true,null, false, "disallowed", false);
@@ -197,27 +216,6 @@ public class DbManager {
         } catch (Exception e) {
             return new LoginResponse(null, false,null, false, "disallowed", false);
         }
-    }
-
-    public User getUser(String email, String uat){
-
-        try{
-            connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM `users` WHERE email=\"" + email + "\" and uat=\"" + uat + "\";");
-            if (rs.next()){
-                User user = new User(rs.getString("email"), rs.getString("pass"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"),
-                        rs.getString("status"), rs.getString("fullName"), rs.getInt("dbSpaceTaken"));
-                return user;
-            }
-            rs.close();
-            stmt.close();
-            close();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return null;
     }
 
     public boolean isDbEnabled(){

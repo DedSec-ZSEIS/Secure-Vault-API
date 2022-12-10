@@ -5,16 +5,14 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize
 public class User {
     private String email;
-    private String password;
     private String uat;
     private String fullName;
     private boolean isAdmin;
     private String isAllowed;
     private int dbSpaceTaken;
 
-    public User(String email, String password, String uat, boolean isAdmin, String isAllowed, String fullName, int dbSpaceTaken){
+    public User(String email, String uat, boolean isAdmin, String isAllowed, String fullName, int dbSpaceTaken){
         this.email = email;
-        this.password = password;
         this.uat = uat;
         this.isAdmin = isAdmin;
         this.isAllowed = isAllowed;
@@ -30,13 +28,6 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
     public String getUat() {
         return uat;
     }

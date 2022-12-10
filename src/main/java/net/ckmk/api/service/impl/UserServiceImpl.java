@@ -1,6 +1,7 @@
 package net.ckmk.api.service.impl;
 
 import net.ckmk.api.database.DbManager;
+import net.ckmk.api.prototypes.User;
 import net.ckmk.api.requests.GenerateUserRequest;
 import net.ckmk.api.requests.LoginRequest;
 import net.ckmk.api.requests.ValidateUserRequest;
@@ -31,10 +32,12 @@ public class UserServiceImpl implements UserService{
     public Response validateNewUser(ValidateUserRequest req) {
         Response r = new Response();
         r.setSuccesfull(false);
-        if (!validateCreationRequest(req.getEmail(), req.getUat())){
-            return r;
+        if (db.isDbEnabled()){
+            if (!validateCreationRequest(req.getEmail(), req.getUat())){
+                return r;
+            }
+            r.setSuccesfull(db.validateUser(req.getEmail(), req.getNewPass(), req.getNewFullName()));
         }
-        r.setSuccesfull(db.validateUser(req.getEmail(), req.getNewPass(), req.getNewFullName()));
         return r;
     }
 
@@ -59,5 +62,19 @@ public class UserServiceImpl implements UserService{
             return false;
         }
         return db.validateTokenAdmin(email, uat);
+    }
+    @Override
+    public User getUserByEmail(String email, String uat) {
+        if (db.isDbEnabled() && db.validateToken(email, uat)){
+            return db.getUser(email);
+        }
+        return null;
+    }
+    @Override
+    public User findUser(String finding, String finderEmail, String findersUat){
+        if (db.isDbEnabled() && db.validateTokenAdmin(finderEmail, findersUat)){
+            return db.getUser(finding);
+        }
+        return null;
     }
 }
