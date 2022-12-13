@@ -115,11 +115,14 @@ public class DbManager {
 
             if (!rs.next()){
                 stmt.execute("INSERT into users (email, uat, hasAdminPrivileges, status) VALUES (\"" + email + "\", \"" + token + "\", " + a + ", \"pending\");");
+                rs.close();
+                stmt.close();
+                close();
+                return new GenerateUserResponse(token, false, true);
             }
             rs.close();
             stmt.close();
             close();
-            return new GenerateUserResponse(token, false, true);
         } catch (Exception e){
             e.printStackTrace();
         }
