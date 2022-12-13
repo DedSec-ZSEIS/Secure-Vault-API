@@ -7,7 +7,9 @@ import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
 import net.ckmk.api.responses.Response;
 import net.ckmk.api.responses.ValidateGenerationLinkResponse;
+import net.ckmk.api.service.impl.MailServiceImpl;
 import net.ckmk.api.service.impl.UserServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,8 +17,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MainRestController {
-
-    UserServiceImpl users = new UserServiceImpl();
+    @Autowired
+    UserServiceImpl users;
+    @Autowired
+    MailServiceImpl mails;
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest req) {
