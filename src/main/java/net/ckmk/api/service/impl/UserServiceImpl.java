@@ -77,4 +77,11 @@ public class UserServiceImpl implements UserService{
         }
         return null;
     }
+
+    @Override
+    public void removeUser(String email) {
+        if (db.isDbEnabled()){
+            db.removeUser(email);
+        }
+    }
 }

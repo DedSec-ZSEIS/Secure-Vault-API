@@ -16,4 +16,5 @@ public interface UserService {
     boolean validateAdminRequest(String email, String uat);
     User getUserByEmail(String email, String uat);
     User findUser(String finding, String finderEmail, String findersUat);
+    void removeUser(String email);
 }

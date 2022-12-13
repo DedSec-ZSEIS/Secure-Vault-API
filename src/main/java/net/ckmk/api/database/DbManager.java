@@ -218,6 +218,16 @@ public class DbManager {
         }
     }
 
+    public void removeUser(String email){
+        try {
+            connect();
+            Statement stmt = conn.createStatement();
+            stmt.execute("DELETE from users where email=\"" + email + "\" limit 1;");
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public boolean isDbEnabled(){
         try {
             connect();

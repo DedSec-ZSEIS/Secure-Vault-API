@@ -29,7 +29,15 @@ public class MainRestController {
 
     @PostMapping("/generateUser")
     public GenerateUserResponse generateUser(@RequestBody GenerateUserRequest req){
-        return users.generateUser(req);
+        GenerateUserResponse r = users.generateUser(req);
+        try{
+            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\n Link: " + "https://epickastrona.ddns.net/" + r.getUrlToken());
+        } catch (Exception e){
+            r.setSuccesfull(false);
+            r.setUrlToken("Invalid Token due to email Address!");
+            users.removeUser(req.getCreatedEmail());
+        }
+        return r;
     }
 
     @PostMapping("/validateLink/{uat}")
