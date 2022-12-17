@@ -31,7 +31,7 @@ public class MainRestController {
     public GenerateUserResponse generateUser(@RequestBody GenerateUserRequest req){
         GenerateUserResponse r = users.generateUser(req);
         try{
-            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\n Link: " + "https://epickastrona.ddns.net:3001/" + r.getUrlToken());
+            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\nLink: " + "https://dedsec-secure-vault.vercel.app/activate" + r.getUrlToken());
         } catch (Exception e){
             r.setSuccesfull(false);
             r.setUrlToken("Invalid Token due to email Address!");
