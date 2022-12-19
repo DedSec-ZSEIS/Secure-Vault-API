@@ -6,6 +6,10 @@ public class Response {
     @JsonProperty
     private boolean succesfull;
 
+    public Response(){
+        succesfull=true;
+    }
+
     public boolean getSuccesfull() {
         return succesfull;
     }

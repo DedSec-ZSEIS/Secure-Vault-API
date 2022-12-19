@@ -1,5 +1,6 @@
 package net.ckmk.api.controllers;
 
+import net.ckmk.api.prototypes.User;
 import net.ckmk.api.requests.GenerateUserRequest;
 import net.ckmk.api.requests.LoginRequest;
 import net.ckmk.api.requests.ValidateUserRequest;
@@ -10,10 +11,7 @@ import net.ckmk.api.responses.ValidateGenerationLinkResponse;
 import net.ckmk.api.service.impl.MailServiceImpl;
 import net.ckmk.api.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class MainRestController {
@@ -48,5 +46,28 @@ public class MainRestController {
     @PostMapping("/validateUser")
     public Response validateUser(@RequestBody ValidateUserRequest req){
         return users.validateNewUser(req);
+    }
+
+    @PostMapping("/help")
+    public Response help(@RequestParam("email") String email, @RequestParam("problem") String problem){
+        Response r = new Response();
+        try{
+            LoginRequest loginRequest = new LoginRequest("root@root.net", "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f");
+            LoginResponse lr = users.logIn(loginRequest);
+            User u = users.findUser(email, lr.getEmail(), lr.getUat());
+            mails.sendMessage("dedsecservice@gmail.com", "HelpService - Help Request from " + email, "The following help request is from an email " + email +
+                    ".\nExistence in the database: " + lr.isHasAccount() +
+                    ".\nFull Name: " + u.getFullName() +
+                    ".\nIs admin: " + u.isAdmin() +
+                    ".\nDatabase space Taken: " + u.getDbSpaceTaken() +
+                    ".\nWritten problem: " + problem);
+
+            mails.sendMessage(email,"Help request confirmation","Thank you for reporting the problem, we will write back as soon as possible.\n" +
+                    "Organization DedSec\n" +
+                    "@Copyright 2022");
+        } catch (Exception e){
+            r.setSuccesfull(false);
+        }
+        return r;
     }
 }
