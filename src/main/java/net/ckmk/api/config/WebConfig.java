@@ -26,7 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public JavaMailSender getMailSender()
     {
-        //Todo fix this fucking shit
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
         javaMailSender.setHost(environment.getProperty("spring.mail.host"));
         javaMailSender.setPort(Integer.parseInt(environment.getProperty("spring.mail.port")));
@@ -39,6 +38,9 @@ public class WebConfig implements WebMvcConfigurer {
         javaMailProperties.put("mail.transport.protocol", "smtp");
         javaMailProperties.put("mail.debug", "false");
         javaMailProperties.put("mail.smtp.ssl.trust", "*");
+        javaMailProperties.put("mail.smtp.timeout", "5000");
+        javaMailProperties.put("mail.smtp.connectiontimeout", "5000");
+        javaMailProperties.put("mail.smtp.writetimeout", "5000");
 
         javaMailSender.setJavaMailProperties(javaMailProperties);
         return javaMailSender;
