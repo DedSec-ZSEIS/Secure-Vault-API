@@ -204,18 +204,19 @@ public class DbManager {
             connect();
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT pass from users where email=\"" + email + "\";");
-            rs.next();
-            if (rs.getString("pass").equals(password)){
-                String uat = UUID.randomUUID().toString();
-                stmt.execute("UPDATE users set uat = \"" + uat + "\" where email=\"" + email + "\";");
-                rs.close();
-                stmt.close();
-                close();
-                User user = getUser(email);
-                return new LoginResponse(user.getEmail(), true, user.getUat(), user.isAdmin(), user.isAllowed(), true);
+            if (rs.next()){
+                if (rs.getString("pass").equals(password)){
+                    String uat = UUID.randomUUID().toString();
+                    stmt.execute("UPDATE users set uat = \"" + uat + "\" where email=\"" + email + "\";");
+                    rs.close();
+                    stmt.close();
+                    close();
+                    User user = getUser(email);
+                    return new LoginResponse(user.getEmail(), true, user.getUat(), user.isAdmin(), user.isAllowed(), true);
+                }
+                return new LoginResponse(null, true,null, false, "disallowed", false);
             }
-            return new LoginResponse(null, true,null, false, "disallowed", false);
-
+            return new LoginResponse(null, false,null, false, "disallowed", false);
         } catch (Exception e) {
             return new LoginResponse(null, false,null, false, "disallowed", false);
         }

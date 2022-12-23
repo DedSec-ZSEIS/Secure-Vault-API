@@ -28,13 +28,13 @@ public class MainRestController {
     @PostMapping("/generateUser")
     public GenerateUserResponse generateUser(@RequestBody GenerateUserRequest req){
         GenerateUserResponse r = users.generateUser(req);
-        try{
-            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\nLink: " + "https://dedsec-secure-vault.vercel.app/activate" + r.getUrlToken());
-        } catch (Exception e){
+        if (!mails.emailExists(req.getCreatedEmail())){
             r.setSuccesfull(false);
             r.setUrlToken("Invalid Token due to email Address!");
             users.removeUser(req.getCreatedEmail());
+            return r;
         }
+        mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\nLink: " + "https://dedsec-secure-vault.vercel.app/activate" + r.getUrlToken());
         return r;
     }
 
@@ -51,23 +51,28 @@ public class MainRestController {
     @PostMapping("/help")
     public Response help(@RequestParam("email") String email, @RequestParam("problem") String problem){
         Response r = new Response();
-        try{
-            LoginRequest loginRequest = new LoginRequest("root@root.net", "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f");
-            LoginResponse lr = users.logIn(loginRequest);
-            User u = users.findUser(email, lr.getEmail(), lr.getUat());
-            mails.sendMessage("dedsecservice@gmail.com", "HelpService - Help Request from " + email, "The following help request is from an email " + email +
-                    ".\nExistence in the database: " + lr.isHasAccount() +
-                    ".\nFull Name: " + u.getFullName() +
-                    ".\nIs admin: " + u.isAdmin() +
-                    ".\nDatabase space Taken: " + u.getDbSpaceTaken() +
-                    ".\nWritten problem: " + problem);
-
-            mails.sendMessage(email,"Help request confirmation","Thank you for reporting the problem, we will write back as soon as possible.\n" +
-                    "Organization DedSec\n" +
-                    "@Copyright 2022");
-        } catch (Exception e){
+        if (!mails.emailExists(email)){
             r.setSuccesfull(false);
+            return r;
         }
+        LoginRequest loginRequest = new LoginRequest("root@root.net", "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f");
+        LoginResponse lr = users.logIn(loginRequest);
+        User u = users.findUser(email, lr.getEmail(), lr.getUat());
+        boolean hasAccount = true;
+        if (u==null){
+            u = new User(email, null, false, null, null, 0);
+            hasAccount = false;
+        }
+        mails.sendMessage("dedsecservice@gmail.com", "HelpService - Help Request from " + email, "The following help request is from an email " + email +
+                ".\nExistence in the database: " + hasAccount +
+                ".\nFull Name: " + u.getFullName() +
+                ".\nIs admin: " + u.isAdmin() +
+                ".\nDatabase space Taken: " + u.getDbSpaceTaken() +
+                ".\nWritten problem: " + problem);
+
+        mails.sendMessage(email,"Help request confirmation","Thank you for reporting the problem, we will write back as soon as possible.\n" +
+                "Organization DedSec\n" +
+                "@Copyright 2022");
         return r;
     }
 }
