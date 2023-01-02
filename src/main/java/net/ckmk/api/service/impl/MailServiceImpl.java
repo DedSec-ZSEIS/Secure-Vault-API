@@ -32,6 +32,9 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public void sendMessage(String to, String subject, String text) {
+        if (!emailExists(to)){
+            throw new RuntimeException("Email not found!");
+        }
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("DedsecSupport@gmail.com");
         message.setTo(to);

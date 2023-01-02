@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public GenerateUserResponse generateUser(GenerateUserRequest req) {
         if (db.isDbEnabled() && validateAdminRequest(req.getEmail(), req.getUat())){
-            return db.generateUser(req.getCreatedEmail(), req.isCreatedIsAdmin());
+            return db.generateUser(req.getCreatedEmail(), false);
         }
         return new GenerateUserResponse(null, false, false);
     }
