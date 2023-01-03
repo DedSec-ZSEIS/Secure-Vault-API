@@ -24,7 +24,7 @@ public class DbManager {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM users where email=\"" + email + "\";");
             if (rs.next()){
-                user = new User(rs.getInt("user_id"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                user = new User(rs.getInt("userId"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
                         rs.getString("fullName"), rs.getInt("dbSpaceTaken"));
             }
             rs.close();
@@ -41,7 +41,7 @@ public class DbManager {
         try {
             connect();
             Statement stmt = conn.createStatement();
-            String fieldName = "user_id";
+            String fieldName = "userId";
             StringBuilder cond = new StringBuilder();
             int i = 0;
             for (Integer a : ids){
@@ -52,7 +52,7 @@ public class DbManager {
             }
             ResultSet rs = stmt.executeQuery("SELECT * FROM users where " + cond + ";");
             while (rs.next()) {
-                users.add(new User(rs.getInt("user_id"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                users.add(new User(rs.getInt("userId"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
                         rs.getString("fullName"), rs.getInt("dbSpaceTaken")));
             }
             rs.close();
@@ -71,7 +71,7 @@ public class DbManager {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM users;");
             while (rs.next()) {
-                users.add(new User(rs.getInt("user_id"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                users.add(new User(rs.getInt("userId"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
                         rs.getString("fullName"), rs.getInt("dbSpaceTaken")));
             }
             rs.close();
