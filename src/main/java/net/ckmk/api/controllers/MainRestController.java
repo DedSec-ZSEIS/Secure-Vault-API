@@ -77,7 +77,7 @@ public class MainRestController {
         GetUsersResponse response;
         if (req.getUserIds() == null || req.getUserIds().isEmpty()){
             response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat()));
-            response.setSuccesfull(true);
+            response.setSuccesfull(response.getUsers() == null);
             return response;
         }
         response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat(), req.getUserIds()));

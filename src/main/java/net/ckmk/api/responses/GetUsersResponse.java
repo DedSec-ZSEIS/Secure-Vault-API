@@ -10,8 +10,10 @@ public class GetUsersResponse extends Response{
 
     public GetUsersResponse (ArrayList<User> u){
         users = new ArrayList<>();
-        for (User user : u){
-            users.add(new SafeUser(user.getId(), user.getEmail(), user.isAdmin(), user.isAllowed(), user.getFullName(), user.getDbSpaceTaken()));
+        if (u != null){
+            for (User user : u){
+                users.add(new SafeUser(user.getId(), user.getEmail(), user.isAdmin(), user.isAllowed(), user.getFullName(), user.getDbSpaceTaken()));
+            }
         }
     }
 
