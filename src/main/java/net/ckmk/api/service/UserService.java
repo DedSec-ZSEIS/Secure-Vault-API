@@ -8,6 +8,8 @@ import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
 import net.ckmk.api.responses.Response;
 
+import java.util.ArrayList;
+
 public interface UserService {
     GenerateUserResponse generateUser(GenerateUserRequest req);
     Response validateNewUser(ValidateUserRequest req);
@@ -17,4 +19,6 @@ public interface UserService {
     User getUserByEmail(String email, String uat);
     User findUser(String finding, String finderEmail, String findersUat);
     void removeUser(String email);
+    ArrayList<User> getUsers(String email, String uat);
+    ArrayList<User> getUsers(String email, String uat, ArrayList<Integer> ids);
 }

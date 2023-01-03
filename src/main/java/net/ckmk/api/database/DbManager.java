@@ -5,6 +5,7 @@ import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public class DbManager {
@@ -23,7 +24,7 @@ public class DbManager {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM users where email=\"" + email + "\";");
             if (rs.next()){
-                user = new User(rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                user = new User(rs.getInt("user_id"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
                         rs.getString("fullName"), rs.getInt("dbSpaceTaken"));
             }
             rs.close();
@@ -33,6 +34,53 @@ public class DbManager {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public ArrayList<User> getUsers(ArrayList<Integer> ids){
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            connect();
+            Statement stmt = conn.createStatement();
+            String fieldName = "user_id";
+            StringBuilder cond = new StringBuilder();
+            int i = 0;
+            for (Integer a : ids){
+                i++;
+                if (i < ids.size()){
+                    cond.append(fieldName).append(" = ").append(a).append(" OR ");
+                } else cond.append(fieldName).append(" = ").append(a);
+            }
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users where " + cond + ";");
+            while (rs.next()) {
+                users.add(new User(rs.getInt("user_id"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                        rs.getString("fullName"), rs.getInt("dbSpaceTaken")));
+            }
+            rs.close();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public ArrayList<User> getUsers(){
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            connect();
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users;");
+            while (rs.next()) {
+                users.add(new User(rs.getInt("user_id"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                        rs.getString("fullName"), rs.getInt("dbSpaceTaken")));
+            }
+            rs.close();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return users;
     }
 
     public boolean validateUser(String email, String pass, String fullName){

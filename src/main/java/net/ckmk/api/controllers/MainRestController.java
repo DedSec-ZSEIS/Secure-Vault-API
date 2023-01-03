@@ -1,13 +1,8 @@
 package net.ckmk.api.controllers;
 
 import net.ckmk.api.prototypes.User;
-import net.ckmk.api.requests.GenerateUserRequest;
-import net.ckmk.api.requests.LoginRequest;
-import net.ckmk.api.requests.ValidateUserRequest;
-import net.ckmk.api.responses.GenerateUserResponse;
-import net.ckmk.api.responses.LoginResponse;
-import net.ckmk.api.responses.Response;
-import net.ckmk.api.responses.ValidateGenerationLinkResponse;
+import net.ckmk.api.requests.*;
+import net.ckmk.api.responses.*;
 import net.ckmk.api.service.impl.MailServiceImpl;
 import net.ckmk.api.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +56,7 @@ public class MainRestController {
         User u = users.findUser(email, lr.getEmail(), lr.getUat());
         boolean hasAccount = true;
         if (u==null){
-            u = new User(email, null, false, null, null, 0);
+            u = new User(-1, email, null, false, null, null, 0);
             hasAccount = false;
         }
         mails.sendMessage("dedsecservice@gmail.com", "HelpService - Help Request from " + email, "The following help request is from an email " + email +
@@ -75,5 +70,18 @@ public class MainRestController {
                 "Organization DedSec\n" +
                 "@Copyright 2022");
         return r;
+    }
+
+    @PostMapping("/getUsers")
+    public GetUsersResponse getUsers(@RequestBody GetUsersRequest req){
+        GetUsersResponse response;
+        if (req.getUserIds() == null || req.getUserIds().isEmpty()){
+            response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat()));
+            response.setSuccesfull(true);
+            return response;
+        }
+        response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat(), req.getUserIds()));
+        response.setSuccesfull(false);
+        return response;
     }
 }

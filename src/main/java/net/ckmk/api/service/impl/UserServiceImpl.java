@@ -11,6 +11,8 @@ import net.ckmk.api.responses.Response;
 import net.ckmk.api.service.UserService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class UserServiceImpl implements UserService{
 
@@ -83,5 +85,19 @@ public class UserServiceImpl implements UserService{
         if (db.isDbEnabled()){
             db.removeUser(email);
         }
+    }
+
+    @Override
+    public ArrayList<User> getUsers(String email, String uat) {
+        if (db.isDbEnabled() && db.validateTokenAdmin(email, uat)){
+            return db.getUsers();
+        } return null;
+    }
+
+    @Override
+    public ArrayList<User> getUsers(String email, String uat, ArrayList<Integer> ids) {
+        if (db.isDbEnabled() && db.validateTokenAdmin(email, uat)){
+            return db.getUsers(ids);
+        } return null;
     }
 }
