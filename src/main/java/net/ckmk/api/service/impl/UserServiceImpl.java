@@ -33,12 +33,12 @@ public class UserServiceImpl implements UserService{
     @Override
     public Response validateNewUser(ValidateUserRequest req) {
         Response r = new Response();
-        r.setSuccesfull(false);
+        r.setSuccessful(false);
         if (db.isDbEnabled()){
             if (!validateCreationRequest(req.getEmail(), req.getUat())){
                 return r;
             }
-            r.setSuccesfull(db.validateUser(req.getEmail(), req.getNewPass(), req.getNewFullName()));
+            r.setSuccessful(db.validateUser(req.getEmail(), req.getNewPass(), req.getNewFullName()));
         }
         return r;
     }

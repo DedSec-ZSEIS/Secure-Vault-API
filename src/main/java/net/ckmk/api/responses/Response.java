@@ -4,17 +4,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Response {
     @JsonProperty
-    private boolean succesfull;
+    private boolean successful;
 
     public Response(){
-        succesfull=true;
+        successful =true;
     }
 
-    public boolean getSuccesfull() {
-        return succesfull;
+    public boolean getSuccessful() {
+        return successful;
     }
 
-    public void setSuccesfull(boolean succesfull) {
-        this.succesfull = succesfull;
+    public void setSuccessful(boolean successful) {
+        this.successful = successful;
     }
 }

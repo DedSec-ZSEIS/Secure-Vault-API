@@ -10,7 +10,7 @@ public class GenerateUserResponse extends Response{
     public GenerateUserResponse(String urlToken, boolean isInDb, boolean succesfull) {
         this.urlToken = urlToken;
         this.isInDb = isInDb;
-        setSuccesfull(succesfull);
+        setSuccessful(succesfull);
     }
 
     public String getUrlToken() {

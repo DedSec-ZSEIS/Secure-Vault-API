@@ -25,8 +25,8 @@ public class ValidateGenerationLinkResponse extends Response{
     private boolean validateLink(String uat){
         boolean succ = db.validateGenerationLink(uat);
         if (succ){
-            setSuccesfull(true);
-        } else setSuccesfull(false);
+            setSuccessful(true);
+        } else setSuccessful(false);
         return succ;
     }
 }

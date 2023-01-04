@@ -24,9 +24,9 @@ public class MainRestController {
     public GenerateUserResponse generateUser(@RequestBody GenerateUserRequest req){
         GenerateUserResponse r = users.generateUser(req);
         try {
-            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\nLink: " + "https://dedsec-secure-vault.vercel.app/activate" + r.getUrlToken());
+            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\nLink: " + "https://dedsec-secure-vault.vercel.app/activate/" + r.getUrlToken());
         } catch (Exception e){
-            r.setSuccesfull(false);
+            r.setSuccessful(false);
             r.setUrlToken("Invalid Token due to email Address!");
             users.removeUser(req.getCreatedEmail());
             return r;
@@ -48,7 +48,7 @@ public class MainRestController {
     public Response help(@RequestParam("email") String email, @RequestParam("problem") String problem){
         Response r = new Response();
         if (!mails.emailExists(email)){
-            r.setSuccesfull(false);
+            r.setSuccessful(false);
             return r;
         }
         LoginRequest loginRequest = new LoginRequest("root@root.net", "ddaf35a193617abacc417349ae20413112e6fa4e89a97ea20a9eeee64b55d39a2192992a274fc1a836ba3c23a3feebbd454d4423643ce80e2a9ac94fa54ca49f");
@@ -77,11 +77,11 @@ public class MainRestController {
         GetUsersResponse response;
         if (req.getUserIds() == null || req.getUserIds().isEmpty()){
             response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat()));
-            response.setSuccesfull(response.getUsers() == null);
+            response.setSuccessful(response.getUsers() == null);
             return response;
         }
         response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat(), req.getUserIds()));
-        response.setSuccesfull(false);
+        response.setSuccessful(false);
         return response;
     }
 }

@@ -16,7 +16,7 @@ public class LoginResponse extends Response{
         this.uat = uat;
         this.isAdmin = isAdmin;
         this.isAllowed = isAllowed;
-        this.setSuccesfull(succesfull);
+        this.setSuccessful(succesfull);
     }
 
     public String getEmail() {
