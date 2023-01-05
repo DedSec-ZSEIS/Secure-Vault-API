@@ -48,4 +48,14 @@ public class WebConfig implements WebMvcConfigurer {
         javaMailSender.setJavaMailProperties(javaMailProperties);
         return javaMailSender;
     }
+
+    @Bean
+    public DbManager getDbManager(){
+        DbManager dbManager = new DbManager();
+        dbManager.setUrl(environment.getProperty("spring.datasource.url"));
+        dbManager.setUsername(environment.getProperty("spring.datasource.username"));
+        dbManager.setPassword(environment.getProperty("spring.datasource.password"));
+
+        return dbManager;
+    }
 }

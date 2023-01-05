@@ -9,18 +9,15 @@ import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
 import net.ckmk.api.responses.Response;
 import net.ckmk.api.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 
 @Service
 public class UserServiceImpl implements UserService{
-
-    private final DbManager db;
-
-    public UserServiceImpl(){
-        this.db = new DbManager();
-    }
+    @Autowired
+    private DbManager db;
 
     @Override
     public GenerateUserResponse generateUser(GenerateUserRequest req) {

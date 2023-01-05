@@ -11,10 +11,13 @@ import java.util.UUID;
 public class DbManager {
 
     private Connection conn;
+    private String url;
+    private String username;
+    private String password;
 
     private void connect() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        this.conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/securevault", "root", "");
+        this.conn = DriverManager.getConnection(url, username, password);
     }
 
     public User getUser(String email){
@@ -297,5 +300,25 @@ public class DbManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -2,9 +2,11 @@ package net.ckmk.api.responses;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import net.ckmk.api.database.DbManager;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class ValidateGenerationLinkResponse extends Response{
-    private final DbManager db = new DbManager();
+    @Autowired
+    private DbManager db;
     @JsonProperty
     private final boolean exists;
     @JsonProperty
