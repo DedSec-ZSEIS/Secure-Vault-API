@@ -14,7 +14,7 @@ public class DbManager {
 
     private void connect() throws Exception {
         Class.forName("com.mysql.cj.jdbc.Driver");
-        this.conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/securevault","root","");
+        this.conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/securevault", "root", "");
     }
 
     public User getUser(String email){

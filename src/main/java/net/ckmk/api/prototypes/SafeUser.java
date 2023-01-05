@@ -10,7 +10,7 @@ public class SafeUser {
     @JsonProperty
     private String fullName;
     @JsonProperty
-    private boolean admin;
+    private final boolean admin;
     @JsonProperty
     private String status;
     @JsonProperty
