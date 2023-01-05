@@ -17,9 +17,12 @@ public class ApiApplication {
 				CommandHandler h = new CommandHandler();
 				Scanner scan = new Scanner(System.in);
 				String currCmd;
-
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					throw new RuntimeException(e);
+				}
 				while (true){
-					System.out.print("> \n");
 					currCmd = scan.next();
 					h.handleCommand(currCmd);
 				}
