@@ -1,21 +1,25 @@
 package net.ckmk.api.responses;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonSerialize
 public class LoginResponse extends Response{
+    @JsonProperty
     private String email;
+    @JsonProperty
     private boolean hasAccount;
+    @JsonProperty
     private String uat;
-    private boolean isAdmin;
-    private String isAllowed;
+    @JsonProperty
+    private boolean admin;
+    @JsonProperty
+    private String status;
 
-    public LoginResponse(String email, boolean hasAccount, String uat, boolean isAdmin, String isAllowed, boolean succesfull){
+    public LoginResponse(String email, boolean hasAccount, String uat, boolean admin, String status, boolean succesfull){
         this.email = email;
         this.hasAccount = hasAccount;
         this.uat = uat;
-        this.isAdmin = isAdmin;
-        this.isAllowed = isAllowed;
+        this.admin = admin;
+        this.status = status;
         this.setSuccessful(succesfull);
     }
 
@@ -36,19 +40,11 @@ public class LoginResponse extends Response{
     }
 
     public boolean getAdmin() {
-        return isAdmin;
+        return admin;
     }
 
     public void setAdmin(boolean admin) {
-        isAdmin = admin;
-    }
-
-    public String getAllowed() {
-        return isAllowed;
-    }
-
-    public void setAllowed(String allowed) {
-        isAllowed = allowed;
+        this.admin = admin;
     }
 
     public boolean isHasAccount() {
@@ -57,5 +53,13 @@ public class LoginResponse extends Response{
 
     public void setHasAccount(boolean hasAccount) {
         this.hasAccount = hasAccount;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

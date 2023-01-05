@@ -1,5 +1,6 @@
 package net.ckmk.api.controllers;
 
+import net.ckmk.api.prototypes.SafeUser;
 import net.ckmk.api.prototypes.User;
 import net.ckmk.api.requests.*;
 import net.ckmk.api.responses.*;
@@ -77,11 +78,16 @@ public class MainRestController {
         GetUsersResponse response;
         if (req.getUserIds() == null || req.getUserIds().isEmpty()){
             response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat()));
-            response.setSuccessful(response.getUsers() == null);
+            response.setSuccessful(response.getUsers() != null);
             return response;
         }
         response = new GetUsersResponse(users.getUsers(req.getEmail(), req.getUat(), req.getUserIds()));
-        response.setSuccessful(false);
+        response.setSuccessful(response.getUsers() != null);
         return response;
+    }
+
+    @PostMapping("/testUser")
+    public SafeUser getUser(){
+        return new SafeUser(1, "tak@tak.net", true, "accepted", "Adam Malyz", 0);
     }
 }

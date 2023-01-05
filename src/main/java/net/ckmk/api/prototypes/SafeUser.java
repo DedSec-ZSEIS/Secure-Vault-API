@@ -1,22 +1,26 @@
 package net.ckmk.api.prototypes;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-@JsonSerialize
 public class SafeUser {
+    @JsonProperty
     private int id;
+    @JsonProperty
     private String email;
-
+    @JsonProperty
     private String fullName;
-    private boolean isAdmin;
-    private String isAllowed;
+    @JsonProperty
+    private boolean admin;
+    @JsonProperty
+    private String status;
+    @JsonProperty
     private int dbSpaceTaken;
 
-    public SafeUser(int id, String email, boolean isAdmin, String isAllowed, String fullName, int dbSpaceTaken){
+    public SafeUser(int id, String email, boolean admin, String status, String fullName, int dbSpaceTaken){
         this.id = id;
         this.email = email;
-        this.isAdmin = isAdmin;
-        this.isAllowed = isAllowed;
+        this.admin = admin;
+        this.status = status;
         this.fullName = fullName;
         this.dbSpaceTaken = dbSpaceTaken;
     }
@@ -30,19 +34,15 @@ public class SafeUser {
     }
 
     public boolean isAdmin() {
-        return isAdmin;
-    }
-
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+        return admin;
     }
 
     public String isAllowed() {
-        return isAllowed;
+        return status;
     }
 
     public void setAllowed(String allowed) {
-        isAllowed = allowed;
+        status = allowed;
     }
 
     public String getFullName() {
