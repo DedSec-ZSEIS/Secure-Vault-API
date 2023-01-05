@@ -8,6 +8,7 @@ import net.ckmk.api.requests.ValidateUserRequest;
 import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
 import net.ckmk.api.responses.Response;
+import net.ckmk.api.responses.ValidateGenerationLinkResponse;
 import net.ckmk.api.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -96,5 +97,18 @@ public class UserServiceImpl implements UserService{
         if (db.isDbEnabled() && db.validateTokenAdmin(email, uat)){
             return db.getUsers(ids);
         } return null;
+    }
+
+    @Override
+    public ValidateGenerationLinkResponse validateGenerationLink(String uat) {
+        boolean exists;
+        String email = null;
+        if (db.isDbEnabled()){
+            exists = db.validateGenerationLink(uat);
+            if (exists){
+                email = db.getEmail(uat);
+            }
+        } else exists = false;
+        return new ValidateGenerationLinkResponse(email, uat, exists);
     }
 }

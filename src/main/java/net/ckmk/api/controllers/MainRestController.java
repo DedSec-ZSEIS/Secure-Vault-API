@@ -37,7 +37,7 @@ public class MainRestController {
 
     @PostMapping("/validateLink/{uat}")
     public ValidateGenerationLinkResponse validateGenerationLink(@PathVariable String uat){
-        return new ValidateGenerationLinkResponse(uat);
+        return users.validateGenerationLink(uat);
     }
 
     @PostMapping("/validateUser")

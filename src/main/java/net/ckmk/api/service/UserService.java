@@ -7,6 +7,7 @@ import net.ckmk.api.requests.ValidateUserRequest;
 import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
 import net.ckmk.api.responses.Response;
+import net.ckmk.api.responses.ValidateGenerationLinkResponse;
 
 import java.util.ArrayList;
 
@@ -21,4 +22,5 @@ public interface UserService {
     void removeUser(String email);
     ArrayList<User> getUsers(String email, String uat);
     ArrayList<User> getUsers(String email, String uat, ArrayList<Integer> ids);
+    ValidateGenerationLinkResponse validateGenerationLink(String uat);
 }
