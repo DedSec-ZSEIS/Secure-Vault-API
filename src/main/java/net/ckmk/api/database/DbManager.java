@@ -20,6 +20,27 @@ public class DbManager {
         this.conn = DriverManager.getConnection(url, username, password);
     }
 
+    public void removeUsers(ArrayList<Integer> ids){
+        try {
+            connect();
+            Statement stmt = conn.createStatement();
+            String fieldName = "userId";
+            StringBuilder cond = new StringBuilder();
+            int i = 0;
+            for (Integer a : ids){
+                i++;
+                if (i < ids.size()){
+                    cond.append(fieldName).append(" = ").append(a).append(" OR ");
+                } else cond.append(fieldName).append(" = ").append(a);
+            }
+            stmt.execute("DELETE from users where " + cond + " limit " + ids.size() + ";");
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public User getUser(String email){
         User user = null;
         try {
@@ -278,6 +299,8 @@ public class DbManager {
             connect();
             Statement stmt = conn.createStatement();
             stmt.execute("DELETE from users where email=\"" + email + "\" limit 1;");
+            stmt.close();
+            close();
         } catch (Exception e){
             e.printStackTrace();
         }

@@ -86,8 +86,10 @@ public class MainRestController {
         return response;
     }
 
-    @PostMapping("/testUser")
-    public SafeUser getUser(){
-        return new SafeUser(1, "tak@tak.net", true, "accepted", "Adam Malyz", 0);
+    @PostMapping("/removeUsers")
+    public Response removeUsers(@RequestBody RemoveUsersRequest req){
+        Response response = new Response();
+        response.setSuccessful(users.removeUsers(req.getEmail(), req.getUat(), req.getUserIds()));
+        return response;
     }
 }

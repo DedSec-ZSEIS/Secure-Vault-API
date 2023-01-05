@@ -111,4 +111,12 @@ public class UserServiceImpl implements UserService{
         } else exists = false;
         return new ValidateGenerationLinkResponse(email, uat, exists);
     }
+
+    @Override
+    public boolean removeUsers(String email, String uat, ArrayList<Integer> ids) {
+        if (db.isDbEnabled() && db.validateTokenAdmin(email, uat) && !ids.isEmpty()){
+            db.removeUsers(ids);
+            return true;
+        } return false;
+    }
 }
