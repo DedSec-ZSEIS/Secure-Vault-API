@@ -6,8 +6,18 @@ import net.ckmk.api.requests.*;
 import net.ckmk.api.responses.*;
 import net.ckmk.api.service.impl.MailServiceImpl;
 import net.ckmk.api.service.impl.UserServiceImpl;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 @RestController
 public class MainRestController {
@@ -91,5 +101,17 @@ public class MainRestController {
         Response response = new Response();
         response.setSuccessful(users.removeUsers(req.getEmail(), req.getUat(), req.getUserIds()));
         return response;
+    }
+
+    @PostMapping("/uploadFile")
+    public Response upload(@RequestParam("file") MultipartFile file) {
+        System.out.println(file.getOriginalFilename() + " " + file.getSize());
+        return new Response();
+    }
+
+    @PostMapping(value = "/getFile", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    public @ResponseBody byte[] getFile() throws IOException {
+        FileInputStream in = new FileInputStream("C:\\Users\\Mikolaj\\Documents\\plik.txt");
+        return IOUtils.toByteArray(in);
     }
 }
