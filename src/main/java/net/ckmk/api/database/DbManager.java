@@ -114,7 +114,13 @@ public class DbManager {
             ResultSet rs = stmt.executeQuery("SELECT status FROM users where email=\"" + email + "\";");
             if (rs.next()){
                 if (rs.getString("status").equals("pending")){
-                    stmt.execute("UPDATE users set pass=\"" + pass + "\", fullName=\"" + fullName + "\", status=\"accepted\", uat=\"" + UUID.randomUUID() + "\", dbSpaceTaken=0 where email=\"" + email + "\";");
+                    query = "UPDATE users set pass=?, fullName=?, status='accepted', uat=?, dbSpaceTaken=0 where email=?;";
+                    stmt = conn.prepareStatement(query);
+                    stmt.setString(1, pass);
+                    stmt.setString(2, fullName);
+                    stmt.setString(3, UUID.randomUUID().toString());
+                    stmt.setString(4, email);
+                    stmt.execute();
                     rs.close();
                     stmt.close();
                     close();
@@ -176,8 +182,10 @@ public class DbManager {
     public GenerateUserResponse generateUser(String email, boolean isAdmin){
         try{
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users where email=\"" + email + "\";");
+            String query = "SELECT * FROM users where email=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             String token = UUID.randomUUID().toString();
 
             int a;
@@ -186,7 +194,12 @@ public class DbManager {
             } else a = 0;
 
             if (!rs.next()){
-                stmt.execute("INSERT into users (email, uat, hasAdminPrivileges, status) VALUES (\"" + email + "\", \"" + token + "\", " + a + ", \"pending\");");
+                query = "INSERT into users (email, uat, hasAdminPrivileges, status) VALUES (?, ?, ?, 'pending');";
+                stmt = conn.prepareStatement(query);
+                stmt.setString(1, email);
+                stmt.setString(2, token);
+                stmt.setInt(3, a);
+                stmt.execute();
                 rs.close();
                 stmt.close();
                 close();
@@ -204,8 +217,10 @@ public class DbManager {
     public boolean validateToken(String email, String uat){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT uat, status FROM users where email=\"" + email + "\";");
+            String query = "SELECT uat, status FROM users where email=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             rs.next();
             if (rs.getString("uat").equals(uat)){
                 if (rs.getString("status").equals("accepted")){
@@ -227,8 +242,10 @@ public class DbManager {
     public boolean validateCreationToken(String email, String uat){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT uat FROM users where email=\"" + email + "\";");
+            String query = "SELECT uat FROM users where email=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             rs.next();
             if (rs.getString("uat").equals(uat)){
                 rs.close();
@@ -248,8 +265,10 @@ public class DbManager {
     public boolean validateTokenAdmin(String email, String uat){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT uat, hasAdminPrivileges, status FROM users where email=\"" + email + "\";");
+            String query = "SELECT uat, hasAdminPrivileges, status FROM users where email=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()){
                 if (rs.getString("uat").equals(uat)){
                     if (rs.getBoolean("hasAdminPrivileges")){
@@ -274,12 +293,20 @@ public class DbManager {
     public LoginResponse login(String email, String password){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT pass from users where email=\"" + email + "\";");
+            String query = "SELECT pass from users where email=?;";
+
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()){
+
                 if (rs.getString("pass").equals(password)){
                     String uat = UUID.randomUUID().toString();
-                    stmt.execute("UPDATE users set uat = \"" + uat + "\" where email=\"" + email + "\";");
+                    query = "UPDATE users set uat = ? where email=?;";
+                    stmt = conn.prepareStatement(query);
+                    stmt.setString(1, uat);
+                    stmt.setString(2, email);
+                    stmt.execute();
                     rs.close();
                     stmt.close();
                     close();
@@ -297,8 +324,10 @@ public class DbManager {
     public void removeUser(String email){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            stmt.execute("DELETE from users where email=\"" + email + "\" limit 1;");
+            String query = "DELETE from users where email=? limit 1;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, email);
+            stmt.execute();
             stmt.close();
             close();
         } catch (Exception e){

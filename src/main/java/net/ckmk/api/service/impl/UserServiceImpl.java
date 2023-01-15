@@ -114,6 +114,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean removeUsers(String email, String uat, ArrayList<Integer> ids) {
+        if (ids.contains(1)) ids.remove(1);
         if (db.isDbEnabled() && db.validateTokenAdmin(email, uat) && !ids.isEmpty()){
             db.removeUsers(ids);
             return true;
