@@ -45,8 +45,10 @@ public class DbManager {
         User user = null;
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users where email=\"" + email + "\";");
+            String query = "SELECT * FROM users where email=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1,email);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()){
                 user = new User(rs.getInt("userId"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
                         rs.getString("fullName"), rs.getInt("dbSpaceTaken"));
@@ -110,8 +112,10 @@ public class DbManager {
     public boolean validateUser(String email, String pass, String fullName){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT status FROM users where email=\"" + email + "\";");
+            String query = "SELECT status FROM users where email=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()){
                 if (rs.getString("status").equals("pending")){
                     query = "UPDATE users set pass=?, fullName=?, status='accepted', uat=?, dbSpaceTaken=0 where email=?;";
@@ -139,8 +143,10 @@ public class DbManager {
     public String getEmail(String uat){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT email FROM users where uat=\"" + uat + "\";");
+            String query = "SELECT email FROM users where uat=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1,uat);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()){
                 String s = rs.getString("email");
                 rs.close();
@@ -160,8 +166,10 @@ public class DbManager {
     public boolean validateGenerationLink(String uat){
         try {
             connect();
-            Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT uat, status FROM users where uat=\"" + uat + "\";");
+            String query = "SELECT uat, status FROM users where uat=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1,uat);
+            ResultSet rs = stmt.executeQuery();
             if (rs.next()){
                 if (rs.getString("status").equals("pending")){
                     rs.close();
