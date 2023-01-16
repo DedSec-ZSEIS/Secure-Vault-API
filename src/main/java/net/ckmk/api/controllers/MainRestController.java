@@ -4,6 +4,7 @@ import net.ckmk.api.prototypes.SafeUser;
 import net.ckmk.api.prototypes.User;
 import net.ckmk.api.requests.*;
 import net.ckmk.api.responses.*;
+import net.ckmk.api.service.impl.FileServiceImpl;
 import net.ckmk.api.service.impl.MailServiceImpl;
 import net.ckmk.api.service.impl.UserServiceImpl;
 import org.apache.commons.io.IOUtils;
@@ -14,10 +15,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.file.Paths;
 
 @RestController
 public class MainRestController {
@@ -25,6 +24,8 @@ public class MainRestController {
     UserServiceImpl users;
     @Autowired
     MailServiceImpl mails;
+    @Autowired
+    FileServiceImpl files;
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest req) {
@@ -104,14 +105,13 @@ public class MainRestController {
     }
 
     @PostMapping("/uploadFile")
-    public Response upload(@RequestParam("file") MultipartFile file) {
-        System.out.println(file.getOriginalFilename() + " " + file.getSize());
+    public Response upload(@RequestParam("email") String email, @RequestParam("uat") String uat, @RequestParam("file") MultipartFile file){
+        files.saveFile(email, uat, file);
         return new Response();
     }
 
-    @PostMapping(value = "/getFile", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-    public @ResponseBody byte[] getFile() throws IOException {
-        FileInputStream in = new FileInputStream("C:\\Users\\Mikolaj\\Documents\\plik.txt");
-        return IOUtils.toByteArray(in);
+    @PostMapping(value = "/getFile", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody byte[] getFile(@RequestBody GetFileRequest req) throws IOException {
+        return files.getFile(req);
     }
 }

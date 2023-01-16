@@ -1,6 +1,7 @@
 package net.ckmk.api.config;
 
 import net.ckmk.api.database.DbManager;
+import net.ckmk.api.database.FileManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -55,6 +56,11 @@ public class WebConfig implements WebMvcConfigurer {
         dbManager.setPassword(environment.getProperty("spring.datasource.password"));
 
         return dbManager;
+    }
+
+    @Bean
+    public FileManager getFileManager(){
+        return new FileManager(environment.getProperty("spring.file.repo"));
     }
 
     @Bean(name = "multipartResolver")

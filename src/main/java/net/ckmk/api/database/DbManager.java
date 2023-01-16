@@ -19,6 +19,20 @@ public class DbManager {
         Class.forName("com.mysql.cj.jdbc.Driver");
         this.conn = DriverManager.getConnection(url, username, password);
     }
+//Todo ------------------------------------------------
+    public void saveFile(){
+        try {
+            connect();
+            //Todo add file to db
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getFileDir(String email, String fileName){}
+    public void getFiles(String email){}
+    public void getFiles(String email, ArrayList<Integer> ids){}
+//Todo ------------------------------------------------
 
     public void removeUsers(ArrayList<Integer> ids){
         try {
