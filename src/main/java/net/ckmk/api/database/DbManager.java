@@ -243,13 +243,14 @@ public class DbManager {
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
-            rs.next();
-            if (rs.getString("uat").equals(uat)){
-                if (rs.getString("status").equals("accepted")){
-                    rs.close();
-                    stmt.close();
-                    close();
-                    return true;
+            if (rs.next()) {
+                if (rs.getString("uat").equals(uat)) {
+                    if (rs.getString("status").equals("accepted")) {
+                        rs.close();
+                        stmt.close();
+                        close();
+                        return true;
+                    }
                 }
             }
             rs.close();
