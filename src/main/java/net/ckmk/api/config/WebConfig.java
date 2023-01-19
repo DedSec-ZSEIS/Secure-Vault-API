@@ -10,13 +10,18 @@ import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Properties;
 
 @Configuration
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer, HandlerExceptionResolver {
 
     @Autowired
     private Environment environment;
@@ -66,7 +71,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean(name = "multipartResolver")
     public CommonsMultipartResolver multipartResolver() {
         CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver();
-        multipartResolver.setMaxUploadSize(100000);
+        multipartResolver.setMaxUploadSize(11000000);
         return multipartResolver;
     }
 
@@ -78,5 +83,14 @@ public class WebConfig implements WebMvcConfigurer {
                 registry.addMapping("/**").allowedMethods("*").allowedOrigins("*");
             }
         };
+    }
+
+    @Override
+    public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
+        ModelAndView modelAndView = new ModelAndView("file");
+        if (ex instanceof MaxUploadSizeExceededException) {
+            modelAndView.getModel().put("message", "File size exceeds limit!");
+        }
+        return modelAndView;
     }
 }
