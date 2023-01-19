@@ -106,8 +106,9 @@ public class MainRestController {
 
     @PostMapping("/uploadFile")
     public Response upload(@RequestParam("email") String email, @RequestParam("uat") String uat, @RequestParam("file") MultipartFile file){
-        files.saveFile(email, uat, file);
-        return new Response();
+        Response r = new Response();
+        r.setSuccessful(files.saveFile(email, uat, file));
+        return r;
     }
 
     @PostMapping(value = "/getFile", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
