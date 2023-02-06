@@ -2,6 +2,7 @@ package net.ckmk.api.config;
 
 import net.ckmk.api.database.DbManager;
 import net.ckmk.api.database.FileManager;
+import net.ckmk.api.other.Env;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -83,6 +84,11 @@ public class WebConfig implements WebMvcConfigurer, HandlerExceptionResolver {
                 registry.addMapping("/**").allowedMethods("*").allowedOrigins("*");
             }
         };
+    }
+
+    @Bean
+    public Env getEnv(){
+        return new Env(environment.getProperty("external.front.url"));
     }
 
     @Override

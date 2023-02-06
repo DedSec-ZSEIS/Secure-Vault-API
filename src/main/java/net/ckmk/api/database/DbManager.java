@@ -34,6 +34,21 @@ public class DbManager {
     public void getFiles(String email, ArrayList<Integer> ids){}
 //Todo ------------------------------------------------
 
+    public void resetPass(String email, String newPass){
+        try {
+            connect();
+            String query = "UPDATE users set pass=? where email=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setString(1, newPass);
+            stmt.setString(2, email);
+            stmt.execute();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void removeUsers(ArrayList<Integer> ids){
         try {
             connect();

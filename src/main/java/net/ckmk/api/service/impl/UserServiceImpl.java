@@ -120,4 +120,13 @@ public class UserServiceImpl implements UserService{
             return true;
         } return false;
     }
+
+    @Override
+    public boolean resetPass(String email, String newPass) {
+        if (db.isDbEnabled()){
+            db.resetPass(email, newPass);
+            return true;
+        }
+        return false;
+    }
 }

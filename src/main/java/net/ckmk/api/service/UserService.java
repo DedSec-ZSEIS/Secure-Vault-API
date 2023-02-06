@@ -24,4 +24,5 @@ public interface UserService {
     ArrayList<User> getUsers(String email, String uat, ArrayList<Integer> ids);
     ValidateGenerationLinkResponse validateGenerationLink(String uat);
     boolean removeUsers(String email, String uat, ArrayList<Integer> ids);
+    boolean resetPass(String email, String newPass);
 }

@@ -7,14 +7,15 @@ public class Response {
     private boolean successful;
 
     public Response(){
-        successful =true;
+        successful = true;
     }
 
     public boolean getSuccessful() {
         return successful;
     }
 
-    public void setSuccessful(boolean successful) {
+    public Response setSuccessful(boolean successful) {
         this.successful = successful;
+        return this;
     }
 }

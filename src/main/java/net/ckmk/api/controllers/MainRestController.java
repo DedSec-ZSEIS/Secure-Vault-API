@@ -1,5 +1,6 @@
 package net.ckmk.api.controllers;
 
+import net.ckmk.api.other.Env;
 import net.ckmk.api.prototypes.SafeUser;
 import net.ckmk.api.prototypes.User;
 import net.ckmk.api.requests.*;
@@ -17,15 +18,21 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 @RestController
 public class MainRestController {
+    private final HashMap<String, String> passChanging = new HashMap<>();
     @Autowired
     UserServiceImpl users;
     @Autowired
     MailServiceImpl mails;
     @Autowired
     FileServiceImpl files;
+    @Autowired
+    Env env;
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest req) {
@@ -36,7 +43,7 @@ public class MainRestController {
     public GenerateUserResponse generateUser(@RequestBody GenerateUserRequest req){
         GenerateUserResponse r = users.generateUser(req);
         try {
-            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\nLink: " + "https://dedsec-secure-vault.vercel.app/activate/" + r.getUrlToken());
+            mails.sendMessage(req.getCreatedEmail(), "SecureVault Invitation (DedSec)", "You have been invited to join DedSec SecurityVault\nLink: " + env.getFrontEndUrl() + "/activate/" + r.getUrlToken());
         } catch (Exception e){
             r.setSuccessful(false);
             r.setUrlToken("Invalid Token due to email Address!");
@@ -114,5 +121,34 @@ public class MainRestController {
     @PostMapping(value = "/getFile", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody byte[] getFile(@RequestBody GetFileRequest req) throws IOException {
         return files.getFile(req);
+    }
+
+    @PostMapping("/generatePassResetLink")
+    public ResponseEntity<Response> genResetPass(@RequestBody ResetPassRequest req) {
+        if (passChanging.containsKey(req.getEmail())){
+            return ResponseEntity.ok(new Response().setSuccessful(false));
+        }
+        String passToken = UUID.randomUUID().toString() + UUID.randomUUID() + UUID.randomUUID();
+        passChanging.put(req.getEmail(), passToken);
+        mails.sendMessage(req.getEmail(), "Password Reset", "Here is the link to reset your password\nLink: " + env.getFrontEndUrl() + "/resetPass/" + passToken);
+        return ResponseEntity.ok(new Response());
+    }
+
+    @PostMapping("/resetPass/{passResetToken}")
+    public ResponseEntity<Response> resetPass(@PathVariable String passResetToken, @RequestBody PassResetRequest req){
+        String token = "";
+        String email = "";
+        for (String em : passChanging.keySet()){
+            if (passChanging.get(em).equals(passResetToken)){
+                token = passChanging.get(em);
+                email = em;
+                break;
+            }
+        }
+        if (token.equals("") || email.equals("")){
+            return ResponseEntity.ok(new Response().setSuccessful(false));
+        }
+        passChanging.remove(email);
+        return ResponseEntity.ok(new Response().setSuccessful(users.resetPass(email, req.getNewPass())));
     }
 }
