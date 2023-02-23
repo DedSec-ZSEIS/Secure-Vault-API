@@ -1,24 +1,19 @@
 package net.ckmk.api.controllers;
 
 import net.ckmk.api.other.Env;
-import net.ckmk.api.prototypes.SafeUser;
 import net.ckmk.api.prototypes.User;
 import net.ckmk.api.requests.*;
 import net.ckmk.api.responses.*;
 import net.ckmk.api.service.impl.FileServiceImpl;
 import net.ckmk.api.service.impl.MailServiceImpl;
 import net.ckmk.api.service.impl.UserServiceImpl;
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -54,8 +49,11 @@ public class MainRestController {
     }
 
     @PostMapping("/validateLink/{uat}")
-    public ValidateGenerationLinkResponse validateGenerationLink(@PathVariable String uat){
-        return users.validateGenerationLink(uat);
+    public ResponseEntity<ValidateGenerationLinkResponse> validateGenerationLink(@PathVariable String uat){
+        ValidateGenerationLinkResponse r = users.validateGenerationLink(uat);
+        if (r.getSuccessful()){
+            return ResponseEntity.ok(r);
+        } else return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/validateUser")
@@ -132,6 +130,13 @@ public class MainRestController {
         passChanging.put(req.getEmail(), passToken);
         mails.sendMessage(req.getEmail(), "Password Reset", "Here is the link to reset your password\nLink: " + env.getFrontEndUrl() + "/resetPass/" + passToken);
         return ResponseEntity.ok(new Response());
+    }
+
+    @PostMapping("/validatePassLink/{token}")
+    public ResponseEntity<Response> validateLink(@PathVariable String token){
+        if (passChanging.containsValue(token)){
+            return ResponseEntity.ok(new Response().setSuccessful(true));
+        } else return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/resetPass/{passResetToken}")
