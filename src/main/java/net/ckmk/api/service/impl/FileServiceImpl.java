@@ -38,7 +38,7 @@ public class FileServiceImpl implements FileService {
     @Override
     public boolean saveFile(String email, String uat, MultipartFile file) {
         if (dbManager.isDbEnabled() && dbManager.validateToken(email, uat)){
-            return fileManager.saveFile(email, file);
+            return fileManager.saveFile(email, file, dbManager);
         }
         return false;
     }

@@ -1,5 +1,6 @@
 package net.ckmk.api.database;
 
+import net.ckmk.api.prototypes.FileEntity;
 import net.ckmk.api.prototypes.User;
 import net.ckmk.api.responses.GenerateUserResponse;
 import net.ckmk.api.responses.LoginResponse;
@@ -19,21 +20,102 @@ public class DbManager {
         Class.forName("com.mysql.cj.jdbc.Driver");
         this.conn = DriverManager.getConnection(url, username, password);
     }
-//Todo ------------------------------------------------
-    public void saveFile(){
+
+    public ArrayList<FileEntity> getFiles(String email){
+        ArrayList<FileEntity> files = new ArrayList<>();
         try {
             connect();
-            //Todo add file to db
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM files where ownerId=?");
+            stmt.setInt(1, getUser(email).getId());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                files.add(new FileEntity(rs.getInt("fileId"), getUser(rs.getInt("ownerId")), rs.getString("fileName"),
+                        rs.getString("filePath"), rs.getLong("fileSize"), rs.getString("createdAt")));
+            }
+            rs.close();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return files;
+    }
+    public ArrayList<FileEntity> getFiles(String email, ArrayList<Integer> ids){
+        ArrayList<FileEntity> files = new ArrayList<>();
+        try {
+            connect();
+            String fieldName = "fileId";
+            StringBuilder cond = new StringBuilder();
+            int i = 0;
+            for (Integer a : ids){
+                i++;
+                if (i < ids.size()){
+                    cond.append(fieldName).append(" = ").append(a).append(" OR ");
+                } else cond.append(fieldName).append(" = ").append(a);
+            }
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM files where ownerId=? and " + cond);
+            stmt.setInt(1, getUser(email).getId());
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                files.add(new FileEntity(rs.getInt("fileId"), getUser(rs.getInt("ownerId")), rs.getString("fileName"),
+                        rs.getString("filePath"), rs.getLong("fileSize"), rs.getString("createdAt")));
+            }
+            rs.close();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return files;
+    }
+    public void saveFile(String email, String path, String fileName, long fileSize){
+        try {
+            connect();
+            String query = "Insert into files (`ownerId`, `fileName`, `filePath`, `fileSize`, `createdAt`) values (?, ?, ?, ?, now())";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, getUser(email).getId());
+            stmt.setString(2, fileName);
+            stmt.setString(3, path);
+            stmt.setLong(4, fileSize);
+            stmt.execute();
+            close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    public void getFileDir(String email, String fileName){}
-    public void getFiles(String email){}
-    public void getFiles(String email, ArrayList<Integer> ids){}
-//Todo ------------------------------------------------
-
+    public FileEntity getFileData(String email, String fileName){
+        try {
+            connect();
+            String query = "Select * from files where ownerId=? and fileName=?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, getUser(email).getId());
+            stmt.setString(2, fileName);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()){
+                return new FileEntity(rs.getInt("fileId"), getUser(rs.getInt("ownerId")), rs.getString("fileName"), rs.getString("filePath"), rs.getLong("fileSize"), rs.getString("createdAt"));
+            }
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+    public FileEntity getFileData(int id){
+        try {
+            connect();
+            String query = "Select * from files where fileId=?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()){
+                return new FileEntity(id, getUser(rs.getInt("ownerId")), rs.getString("fileName"), rs.getString("filePath"), rs.getLong("fileSize"), rs.getString("createdAt"));
+            }
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
+    }
     public void resetPass(String email, String newPass){
         try {
             connect();
@@ -77,6 +159,27 @@ public class DbManager {
             String query = "SELECT * FROM users where email=?;";
             PreparedStatement stmt = conn.prepareStatement(query);
             stmt.setString(1,email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()){
+                user = new User(rs.getInt("userId"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),
+                        rs.getString("fullName"), rs.getInt("dbSpaceTaken"));
+            }
+            rs.close();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    public User getUser(int id){
+        User user = null;
+        try {
+            connect();
+            String query = "SELECT * FROM users where userId=?;";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()){
                 user = new User(rs.getInt("userId"), rs.getString("email"), rs.getString("uat"), rs.getBoolean("hasAdminPrivileges"), rs.getString("status"),

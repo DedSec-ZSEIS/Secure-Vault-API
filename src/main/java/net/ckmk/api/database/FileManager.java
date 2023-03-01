@@ -36,7 +36,7 @@ public class FileManager {
         return false;
     }
 
-    public boolean saveFile(String email, MultipartFile file) {
+    public boolean saveFile(String email, MultipartFile file, DbManager dbManager) {
         createUserFolder(email);
         String path = folderPath + "\\" + email + "\\" + file.getOriginalFilename();
         File f = new File(path);
@@ -45,6 +45,7 @@ public class FileManager {
         } catch (IOException e){
             return false;
         }
+        dbManager.saveFile(email, path, file.getOriginalFilename(), file.getSize());
         return true;
     }
 
