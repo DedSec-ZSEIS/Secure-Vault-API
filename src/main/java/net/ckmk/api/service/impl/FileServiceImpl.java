@@ -2,13 +2,16 @@ package net.ckmk.api.service.impl;
 
 import net.ckmk.api.database.DbManager;
 import net.ckmk.api.database.FileManager;
+import net.ckmk.api.prototypes.FileEntity;
 import net.ckmk.api.requests.GetFileRequest;
+import net.ckmk.api.requests.GetFilesRequest;
 import net.ckmk.api.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -17,15 +20,28 @@ public class FileServiceImpl implements FileService {
     @Autowired
     private DbManager dbManager;
 
-    //Todo to sie jeszcze pozmienia
     @Override
     public byte[] getFile(GetFileRequest request) throws IOException {
         if (dbManager.isDbEnabled() && dbManager.validateToken(request.getEmail(), request.getUat())){
-            return fileManager.getFile("root@root.net\\tak.txt");
+            return fileManager.getFile(dbManager.getFileData(request.getEmail(), request.getFileName()).getFilePath());
         }
         return null;
     }
-    //todo end here
+    @Override
+    public ArrayList<FileEntity> getFiles(String email, String uat) {
+        if (dbManager.isDbEnabled() && dbManager.validateToken(email, uat)){
+            return dbManager.getFiles(email);
+        }
+        return null;
+    }
+
+    @Override
+    public ArrayList<FileEntity> getFiles(String email, String uat, ArrayList<Integer> ids) {
+        if (dbManager.isDbEnabled() && dbManager.validateToken(email, uat)){
+            return dbManager.getFiles(email, ids);
+        }
+        return null;
+    }
 
     @Override
     public boolean removeFile() {

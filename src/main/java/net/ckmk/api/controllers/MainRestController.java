@@ -102,6 +102,22 @@ public class MainRestController {
         return response;
     }
 
+    @PostMapping("/getFiles")
+    public ResponseEntity<GetFilesResponse> getFiles(@RequestBody GetFilesRequest req){
+        GetFilesResponse response;
+        if (req.getFileIds() == null || req.getFileIds().isEmpty()){
+            response = new GetFilesResponse(files.getFiles(req.getEmail(), req.getUat()));
+            response.setSuccessful(response.getFiles() != null);
+        } else {
+            response = new GetFilesResponse(files.getFiles(req.getEmail(), req.getUat(), req.getFileIds()));
+            response.setSuccessful(response.getFiles() != null);
+        }
+        if (response.getFiles().isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/removeUsers")
     public Response removeUsers(@RequestBody RemoveUsersRequest req){
         Response response = new Response();

@@ -1,43 +1,25 @@
 package net.ckmk.api.prototypes;
 
-public class FileEntity {
-    private final int id;
-    private final User owner;
-    private final String fileName;
-    private final String filePath;
-    private final long fileSize;
-    private final String createdAt;
+public class FileEntity extends SafeFileEntity{
+    private User owner;
+    private String filePath;
 
     public FileEntity(int id, User owner, String fileName, String filePath, long fileSize, String createdAt) {
-        this.id = id;
-        this.owner = owner;
-        this.fileName = fileName;
-        this.filePath = filePath;
-        this.fileSize = fileSize;
-        this.createdAt = createdAt;
-    }
-
-    public int getId() {
-        return id;
+        super(id, fileName, fileSize, createdAt);
+        setOwner(owner);
+        setFilePath(filePath);
     }
 
     public User getOwner() {
         return owner;
     }
-
-    public String getFileName() {
-        return fileName;
+    public void setOwner(User owner) {
+        this.owner = owner;
     }
-
     public String getFilePath() {
         return filePath;
     }
-
-    public long getFileSize() {
-        return fileSize;
-    }
-
-    public String getCreatedAt() {
-        return createdAt;
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 }

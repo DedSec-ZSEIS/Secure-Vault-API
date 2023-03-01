@@ -38,14 +38,15 @@ public class FileManager {
 
     public boolean saveFile(String email, MultipartFile file, DbManager dbManager) {
         createUserFolder(email);
-        String path = folderPath + "\\" + email + "\\" + file.getOriginalFilename();
+        String shortPath = "\\" + email + "\\" + file.getOriginalFilename();
+        String path = folderPath + shortPath;
         File f = new File(path);
         try{
             file.transferTo(f);
         } catch (IOException e){
             return false;
         }
-        dbManager.saveFile(email, path, file.getOriginalFilename(), file.getSize());
+        dbManager.saveFile(email, shortPath, file.getOriginalFilename(), file.getSize());
         return true;
     }
 
