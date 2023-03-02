@@ -105,7 +105,7 @@ public class MainRestController {
 
     @PostMapping("/getFiles")
     public ResponseEntity<GetFilesResponse> getFiles(@RequestBody GetFilesRequest req){
-        if (users.checkLoggedIn(req.getEmail(), req.getUat())){
+        if (!users.checkLoggedIn(req.getEmail(), req.getUat())){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         GetFilesResponse response;
