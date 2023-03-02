@@ -129,4 +129,9 @@ public class UserServiceImpl implements UserService{
         }
         return false;
     }
+
+    @Override
+    public boolean checkLoggedIn(String email, String uat) {
+        return db.isDbEnabled() && db.validateToken(email, uat);
+    }
 }

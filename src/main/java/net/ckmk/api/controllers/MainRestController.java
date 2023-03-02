@@ -8,6 +8,7 @@ import net.ckmk.api.service.impl.FileServiceImpl;
 import net.ckmk.api.service.impl.MailServiceImpl;
 import net.ckmk.api.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -104,6 +105,9 @@ public class MainRestController {
 
     @PostMapping("/getFiles")
     public ResponseEntity<GetFilesResponse> getFiles(@RequestBody GetFilesRequest req){
+        if (users.checkLoggedIn(req.getEmail(), req.getUat())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
         GetFilesResponse response;
         if (req.getFileIds() == null || req.getFileIds().isEmpty()){
             response = new GetFilesResponse(files.getFiles(req.getEmail(), req.getUat()));
