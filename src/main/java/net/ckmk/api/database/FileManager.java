@@ -1,5 +1,6 @@
 package net.ckmk.api.database;
 
+import net.ckmk.api.prototypes.FileEntity;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,8 +33,14 @@ public class FileManager {
         return IOUtils.toByteArray(in);
     }
 
-    public boolean removeFile(){
-        return false;
+    public boolean removeFile(FileEntity fileData, DbManager dbManager){
+        String p = folderPath + fileData.getFilePath();
+        File f = new File(p);
+        if (!f.delete()){
+            return false;
+        }
+        dbManager.removeFile(fileData.getId());
+        return true;
     }
 
     public boolean saveFile(String email, MultipartFile file, DbManager dbManager) {

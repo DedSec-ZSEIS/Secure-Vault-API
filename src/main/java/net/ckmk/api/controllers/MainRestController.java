@@ -141,6 +141,18 @@ public class MainRestController {
         return files.getFile(req);
     }
 
+    @PostMapping("/removeFile")
+    public ResponseEntity<Response> removeFile(@RequestBody RemoveFileRequest req){
+        if (!users.checkLoggedIn(req.getEmail(), req.getUat())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        Response r = new Response().setSuccessful(files.removeFile(req));
+        if (r.getSuccessful()){
+            return ResponseEntity.ok(r);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
+
     @PostMapping("/generatePassResetLink")
     public ResponseEntity<Response> genResetPass(@RequestBody ResetPassRequest req) {
         if (passChanging.containsKey(req.getEmail())){

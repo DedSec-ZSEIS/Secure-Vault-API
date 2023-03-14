@@ -5,6 +5,7 @@ import net.ckmk.api.database.FileManager;
 import net.ckmk.api.prototypes.FileEntity;
 import net.ckmk.api.requests.GetFileRequest;
 import net.ckmk.api.requests.GetFilesRequest;
+import net.ckmk.api.requests.RemoveFileRequest;
 import net.ckmk.api.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,9 +45,9 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public boolean removeFile() {
+    public boolean removeFile(RemoveFileRequest request) {
         if (dbManager.isDbEnabled()){
-            return fileManager.removeFile();
+            return fileManager.removeFile(dbManager.getFileData(request.getEmail(), request.getFileName()), dbManager);
         }
         return false;
     }

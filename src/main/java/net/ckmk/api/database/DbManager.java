@@ -21,6 +21,19 @@ public class DbManager {
         this.conn = DriverManager.getConnection(url, username, password);
     }
 
+    public void removeFile(int id){
+        try {
+            connect();
+            PreparedStatement stmt = conn.prepareStatement("DELETE FROM files where fileId=?");
+            stmt.setInt(1, id);
+            stmt.execute();
+            stmt.close();
+            close();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public ArrayList<FileEntity> getFiles(String email){
         ArrayList<FileEntity> files = new ArrayList<>();
         try {
@@ -37,6 +50,7 @@ public class DbManager {
             close();
         } catch (Exception e){
             e.printStackTrace();
+            System.out.println("[Error] A possible solution is to limit the amount of request sent at the same time.");
         }
         return files;
     }
@@ -65,6 +79,7 @@ public class DbManager {
             close();
         } catch (Exception e){
             e.printStackTrace();
+            System.out.println("[Error] A possible solution is to limit the amount of request sent at the same time.");
         }
         return files;
     }
