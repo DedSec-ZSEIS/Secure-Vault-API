@@ -53,7 +53,9 @@ public class FileManager {
         } catch (IOException e){
             return false;
         }
-        dbManager.saveFile(email, shortPath, file.getOriginalFilename(), file.getSize());
+        if (!f.exists()){
+            dbManager.saveFile(email, shortPath, file.getOriginalFilename(), file.getSize());
+        }
         return true;
     }
 
